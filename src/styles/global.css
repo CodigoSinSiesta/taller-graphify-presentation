@@ -284,6 +284,34 @@ a:hover {
 }
 
 /* ============================================
+   EYEBROW V4 — barra horizontal 24×2px antes del texto
+   Inyecta el bar canónico del design system delante de cualquier <span class="label">
+   en los slides. La regla es global pero la clase plana `.label` sigue siendo
+   matchable desde dentro de los componentes Svelte scopeados.
+   ============================================ */
+
+.swiper-slide .label {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.swiper-slide .label::before {
+  content: '';
+  display: inline-block;
+  width: 24px;
+  height: 2px;
+  background: var(--color-electrico);
+  flex-shrink: 0;
+  border-radius: 1px;
+}
+
+/* En slides hands-on (label verde), el bar acompaña el color del texto */
+.swiper-slide .label[data-accent="ok"]::before { background: var(--color-ok); }
+.swiper-slide .label[data-accent="warn"]::before { background: var(--color-warn); }
+.swiper-slide .label[data-accent="err"]::before { background: var(--color-err); }
+
+/* ============================================
    GLASSMORPHISM CARDS — ahora con tokens V4
    ============================================ */
 

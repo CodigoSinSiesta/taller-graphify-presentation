@@ -18,7 +18,7 @@
   <div class="slide-background"></div>
   <div class="slide-content">
     <div class="slide-header">
-      <span class="label">Hands-on 1 · 25-30 min ⭐</span>
+      <span class="label" data-accent="ok">Hands-on 1 · 25-30 min ⭐</span>
       <h2>Setup + <span class="highlight">primera ejecución</span> sobre el starter</h2>
       <p class="lead">
         Output del hands-on: <code>graph.json</code> real, reporte leído, y <strong>ojo entrenado</strong> para distinguir lo que descubrió Graphify vs lo que esperabas.

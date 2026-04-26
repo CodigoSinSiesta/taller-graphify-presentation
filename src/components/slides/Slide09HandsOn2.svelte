@@ -15,7 +15,7 @@
   <div class="slide-background"></div>
   <div class="slide-content">
     <div class="slide-header">
-      <span class="label">Hands-on 2 · 20-25 min ⭐</span>
+      <span class="label" data-accent="ok">Hands-on 2 · 20-25 min ⭐</span>
       <h2>Skill en Claude Code + <span class="highlight">queries reales</span></h2>
       <p class="lead">
         Pasar de "tengo un graph.json precioso" a "el agente lo consulta de forma natural mientras trabajo".

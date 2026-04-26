@@ -20,6 +20,49 @@ const { title = 'Taller Graphify — Presentación' } = Astro.props;
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   </head>
   <body>
+    <!-- V4 slide chrome: top accent bar + breadcrumb + footer (fixed, encima de todos los slides) -->
+    <div class="slide-accent-bar" aria-hidden="true"></div>
+    <div class="slide-breadcrumb" aria-hidden="true">
+      <div class="crumbs">
+        <span class="pulse-dot"></span>
+        <span class="org">código sin siesta</span>
+        <span class="sep">/</span>
+        <span class="deck">taller-graphify</span>
+      </div>
+      <div class="counter" id="slide-counter">01 / 12</div>
+    </div>
+    <div class="slide-footer" aria-hidden="true">
+      <span>Hecho con <span class="heart">♥</span> por Código Sin Siesta · 2026</span>
+      <span>← / → · Esc</span>
+    </div>
     <slot />
+    <script is:inline>
+      // Slide counter sincronizado con .swiper-slide-active (la clase que Navigation aplica)
+      (function () {
+        const counter = document.getElementById('slide-counter');
+        if (!counter) return;
+        const update = () => {
+          const slides = Array.from(document.querySelectorAll('.swiper-slide'));
+          const total = slides.length || 12;
+          const activeIdx = slides.findIndex((s) => s.classList.contains('swiper-slide-active'));
+          const idx = activeIdx >= 0 ? activeIdx + 1 : 1;
+          counter.textContent = String(idx).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+        };
+        const observe = () => {
+          const slides = document.querySelectorAll('.swiper-slide');
+          if (slides.length === 0) {
+            requestAnimationFrame(observe);
+            return;
+          }
+          slides.forEach((s) => {
+            const obs = new MutationObserver(update);
+            obs.observe(s, { attributes: true, attributeFilter: ['class'] });
+          });
+          update();
+        };
+        document.addEventListener('DOMContentLoaded', observe);
+        if (document.readyState !== 'loading') observe();
+      })();
+    </script>
   </body>
 </html>

@@ -1,34 +1,66 @@
-@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800;900&family=Bricolage+Grotesque:wght@400;500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700;800;900&family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700;800&display=swap');
 @import './animations.css';
 
 /* ============================================
-   CSS CUSTOM PROPERTIES (Design System)
+   CSS CUSTOM PROPERTIES (Dark Blueprint V4 — Codigo Sin Siesta design system)
+   Tokens portados desde el bundle de Claude Design (codigo-sin-siesta/project/src/css-system-v4.jsx).
+   "V4 = paleta azul cobalto sobre slate-900. Menos blanco, más identidad de ingeniería."
    ============================================ */
 
 :root {
-  /* Colors - AI Risks Theme */
-  --color-base-dark: #0A1628;           /* Azul marino profundo */
-  --color-primary-cobalt: #1E3A8A;      /* Azul cobalto */
-  --color-accent-bright: #3B82F6;       /* Azul brillante */
-  --color-electric: #60A5FA;            /* Azul eléctrico */
-  --color-neutral-light: #FAF9F6;       /* Blanco hueso */
-  --color-shadow: rgba(10, 22, 40, 0.8);
-  --color-shadow-light: rgba(10, 22, 40, 0.4);
+  /* Paleta azul */
+  --color-cobalto: #1e3a8a;
+  --color-azul: #2563eb;
+  --color-electrico: #3b82f6;
+  --color-cielo: #60a5fa;
+  --color-cielo2: #93c5fd;
+  --color-marino: #0c1e4f;
+
+  /* Neutros — slate con tinte navy */
+  --color-fondo: #0f172a;       /* slate-900 — canvas */
+  --color-fondo-alt: #1e293b;   /* slate-800 — superficies */
+  --color-fondo-elev: #152033;  /* intermedio — cards */
+  --color-borde: #334155;       /* slate-700 */
+  --color-borde2: #475569;      /* slate-600 */
+  --color-tinta: #f1f5f9;       /* slate-100 — texto principal */
+  --color-tinta2: #cbd5e1;      /* slate-300 — texto secundario */
+  --color-tinta3: #94a3b8;      /* slate-400 — meta */
+  --color-tinta4: #64748b;      /* slate-500 — placeholder */
+
+  /* Acentos semánticos */
+  --color-ok: #34d399;          /* emerald-400 */
+  --color-ok-bg: rgba(52, 211, 153, 0.10);
+  --color-ok-bd: rgba(52, 211, 153, 0.35);
+  --color-warn: #fbbf24;        /* amber-400 */
+  --color-warn-bg: rgba(251, 191, 36, 0.10);
+  --color-warn-bd: rgba(251, 191, 36, 0.35);
+  --color-err: #f87171;         /* red-400 */
+  --color-err-bg: rgba(248, 113, 113, 0.10);
+  --color-err-bd: rgba(248, 113, 113, 0.35);
+
+  /* Aliases legacy (mantienen compatibilidad con slides existentes) */
+  --color-base-dark: var(--color-fondo);
+  --color-primary-cobalt: var(--color-cobalto);
+  --color-accent-bright: var(--color-electrico);
+  --color-electric: var(--color-cielo);
+  --color-neutral-light: var(--color-tinta);
+  --color-shadow: rgba(15, 23, 42, 0.8);
+  --color-shadow-light: rgba(15, 23, 42, 0.4);
   --color-glow: rgba(59, 130, 246, 0.3);
   --color-accent-soft: rgba(59, 130, 246, 0.08);
   --color-accent-strong: rgba(59, 130, 246, 0.45);
   --color-electric-soft: rgba(96, 165, 250, 0.12);
   --color-electric-strong: rgba(96, 165, 250, 0.45);
   --color-hero-glow-primary: rgba(96, 165, 250, 0.25);
-  --color-hero-glow-secondary: rgba(59, 130, 246, 0.2);
-  --color-hero-base: rgba(10, 22, 40, 0.96);
-  --color-hero-base-deep: rgba(10, 22, 40, 0.98);
+  --color-hero-glow-secondary: rgba(59, 130, 246, 0.20);
+  --color-hero-base: rgba(15, 23, 42, 0.96);
+  --color-hero-base-deep: rgba(15, 23, 42, 0.98);
 
-  /* Typography */
-  --font-display: 'Space Grotesk', sans-serif;
-  --font-subheader: 'Bricolage Grotesque', sans-serif;
-  --font-body: 'IBM Plex Sans', sans-serif;
-  --font-mono: 'JetBrains Mono', monospace;
+  /* Typography — V4 design uses Inter for body (was IBM Plex Sans) */
+  --font-display: 'Space Grotesk', 'Inter', sans-serif;
+  --font-subheader: 'Space Grotesk', 'Inter', sans-serif;
+  --font-body: 'Inter', system-ui, -apple-system, sans-serif;
+  --font-mono: 'JetBrains Mono', 'IBM Plex Mono', monospace;
 
   /* Sizing */
   --size-xs: 0.5rem;
@@ -138,18 +170,132 @@ a:hover {
 }
 
 /* ============================================
-   GLASSMORPHISM CARDS
+   SLIDE CHROME V4 — reserva de espacio para el chrome global
+   El layout pinta accent-bar (3px) + breadcrumb (top 18px) + footer (bottom 18px).
+   Cada .swiper-slide debe respetar ese cinturón vertical.
+   ============================================ */
+
+.swiper-slide {
+  padding-top: 28px;
+  padding-bottom: 32px;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .swiper-slide {
+    padding-top: 22px;
+    padding-bottom: 26px;
+  }
+}
+
+/* ============================================
+   SLIDE CHROME V4 — top accent bar + breadcrumb header + footer
+   Renderizado una sola vez en PresentationLayout, cubre todos los slides.
+   ============================================ */
+
+.slide-accent-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--color-cobalto) 0%, var(--color-electrico) 50%, var(--color-cielo) 100%);
+  z-index: 100;
+  pointer-events: none;
+}
+
+.slide-breadcrumb {
+  position: fixed;
+  top: 18px;
+  left: 48px;
+  right: 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--color-tinta3);
+  letter-spacing: 0.04em;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.slide-breadcrumb .crumbs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.slide-breadcrumb .pulse-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--color-electrico);
+  box-shadow: 0 0 8px var(--color-electrico);
+  animation: pulse 2s ease-in-out infinite;
+}
+
+.slide-breadcrumb .org {
+  font-weight: 600;
+  color: var(--color-cielo);
+}
+
+.slide-breadcrumb .sep {
+  color: var(--color-tinta4);
+}
+
+.slide-breadcrumb .deck {
+  color: var(--color-tinta2);
+}
+
+.slide-breadcrumb .counter {
+  color: var(--color-tinta3);
+}
+
+.slide-footer {
+  position: fixed;
+  bottom: 18px;
+  left: 48px;
+  right: 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--color-tinta4);
+  z-index: 100;
+  pointer-events: none;
+}
+
+.slide-footer .heart {
+  color: var(--color-electrico);
+}
+
+@media (max-width: 768px) {
+  .slide-breadcrumb,
+  .slide-footer {
+    left: 16px;
+    right: 16px;
+    font-size: 10px;
+  }
+  .slide-breadcrumb .crumbs {
+    gap: 6px;
+  }
+}
+
+/* ============================================
+   GLASSMORPHISM CARDS — ahora con tokens V4
    ============================================ */
 
 .card-glass {
-  background: rgba(30, 58, 138, 0.15);
+  background: var(--color-fondo-elev);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(96, 165, 250, 0.2);
+  border: 1px solid var(--color-borde);
   border-radius: var(--radius-lg);
   padding: var(--spacing-2xl);
   box-shadow:
-    0 8px 32px 0 rgba(10, 22, 40, 0.8),
-    inset 0 1px 1px 0 rgba(96, 165, 250, 0.15);
+    0 1px 3px rgba(0, 0, 0, 0.3),
+    0 8px 24px rgba(0, 0, 0, 0.15);
   transition: all var(--transition-base);
 }
 

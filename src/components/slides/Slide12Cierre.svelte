@@ -5,19 +5,40 @@
   onMount(() => { animateSlideEntrance(slideElement); });
 
   const takeaways = [
-    { num: 1, text: 'Graphify resuelve un problema específico: context budget reventado por re-leer ficheros sobre corpus heterogéneos. No es sustituto universal.' },
-    { num: 2, text: 'El cuadrante manda. Antes de adoptar, verifica que ninguna de las 3 alternativas (GitNexus, vector RAG, agentic search) cubre tu caso mejor.' },
-    { num: 3, text: 'AST es gratis, semántica cuesta. Las 4 capas tienen rentabilidad muy distinta. Conoce qué pagas.' },
-    { num: 4, text: 'El grafo es activo persistente, no decorativo. Si solo abres el HTML al primer pase y no consultas vía skill ni MCP, has tirado dinero.' },
-    { num: 5, text: 'Honestidad como ventaja: cada arista marcada EXTRACTED/INFERRED/AMBIGUOUS. Cohesion en números, no símbolos. Eso es la diferencia con un RAG ingenuo.' }
+    { num: 1, text: 'Graphify resuelve un problema específico: context budget reventado por re-leer ficheros sobre corpus heterogéneos.' },
+    { num: 2, text: 'El cuadrante manda. Verifica que ninguna de las 3 alternativas (GitNexus, vector RAG, agentic search) cubre tu caso mejor.' },
+    { num: 3, text: 'AST gratis, semántica cuesta. Las 4 capas tienen rentabilidad distinta. Conoce qué pagas.' },
+    { num: 4, text: 'El grafo es activo persistente, no decorativo. Si solo abres el HTML al primer pase, has tirado dinero.' },
+    { num: 5, text: 'Honestidad: cada arista EXTRACTED/INFERRED/AMBIGUOUS. Cohesion en números. Diferencia con un RAG ingenuo.' }
   ];
 
-  const recursos = [
-    { label: 'Repo del starter', url: 'github.com/CodigoSinSiesta/taller-graphify-starter' },
-    { label: 'Repo de Graphify', url: 'github.com/safishamsi/graphify' },
-    { label: 'Wiki: graphify', url: 'codigosinsiesta.github.io/wiki/graphify' },
-    { label: 'GitNexus (alternativa código)', url: 'github.com/abhigyanpatwari/GitNexus' }
+  // V4 ResourcesSlide pattern
+  const links = [
+    { icon: '🐙', title: 'Repo del starter',         url: 'github.com/CodigoSinSiesta/taller-graphify-starter',      tag: 'template' },
+    { icon: '🎬', title: 'Slides de este taller',    url: 'codigosinsiesta.github.io/taller-graphify-presentation',  tag: 'deck' },
+    { icon: '📦', title: 'Graphify · repo oficial',  url: 'github.com/safishamsi/graphify',                          tag: 'tool' },
+    { icon: '📖', title: 'Wiki: graphify',           url: 'codigosinsiesta.github.io/wiki/graphify',                 tag: 'docs' },
+    { icon: '🧭', title: 'GitNexus (alternativa)',   url: 'github.com/abhigyanpatwari/GitNexus',                     tag: 'alt' }
   ];
+
+  const qr = {
+    title: 'Escanea para todo',
+    url: 'codigosinsiesta.github.io/taller-graphify'
+  };
+
+  // QR placeholder determinístico (mismo patrón visual que el V4 design original)
+  const qrCells: boolean[] = Array.from({ length: 441 }).map((_, i) => {
+    const r = Math.floor(i / 21);
+    const c = i % 21;
+    const finder = (r === 0 || r === 6 || c === 0 || c === 6) && (r < 7 && c < 7);
+    const finderR = (r === 0 || r === 6 || c === 14 || c === 20) && (r < 7 && c >= 14);
+    const finderB = (r === 14 || r === 20 || c === 0 || c === 6) && (r >= 14 && c < 7);
+    const inner =
+      (r >= 2 && r <= 4 && c >= 2 && c <= 4) ||
+      (r >= 2 && r <= 4 && c >= 16 && c <= 18) ||
+      (r >= 16 && r <= 18 && c >= 2 && c <= 4);
+    return inner || finder || finderR || finderB || ((r * 7 + c * 13) % 5 < 2);
+  });
 </script>
 
 <div class="swiper-slide" bind:this={slideElement}>
@@ -30,37 +51,47 @@
 
     <div class="takeaways">
       {#each takeaways as t}
-        <div class="card-glass takeaway">
+        <div class="takeaway card-glass">
           <span class="num">{t.num}</span>
           <p>{t.text}</p>
         </div>
       {/each}
     </div>
 
-    <div class="grid">
-      <div class="card-glass next-step">
-        <h3>El siguiente paso accionable</h3>
-        <p>Elige <strong>una</strong>, hazla esta semana:</p>
-        <ul>
-          <li><strong>Cuadrante dijo SÍ</strong>: ejecuta sobre tu repo más volátil. <code>graphify hook install</code>. Lee el reporte.</li>
-          <li><strong>Cuadrante dijo NO</strong> pero tienes notas o vault personal: prueba un pase puntual. Datos antes que opinión.</li>
-          <li><strong>Cuadrante dijo "depende"</strong>: aplica un lint determinístico antes de pagar Graphify. Muchos casos se resuelven gratis.</li>
-        </ul>
+    <!-- V4 Resources slide-type: links + QR -->
+    <div class="resources-grid">
+      <div class="links-col">
+        {#each links as l}
+          <div class="link-card">
+            <div class="link-icon">{l.icon}</div>
+            <div class="link-body">
+              <div class="link-title">{l.title}</div>
+              <div class="link-url">{l.url}</div>
+            </div>
+            {#if l.tag}<div class="link-tag">{l.tag}</div>{/if}
+          </div>
+        {/each}
       </div>
 
-      <div class="card-glass recursos">
-        <h3>Recursos</h3>
-        <ul>
-          {#each recursos as r}
-            <li><span class="r-label">{r.label}</span><br/><code>{r.url}</code></li>
-          {/each}
-        </ul>
+      <div class="qr-col">
+        <div class="qr-card">
+          <div class="qr-grid">
+            {#each qrCells as on}
+              <div class="qr-cell" class:on={on}></div>
+            {/each}
+          </div>
+        </div>
+        <div class="qr-caption">
+          <div class="qr-title">{qr.title}</div>
+          <div class="qr-url">{qr.url}</div>
+        </div>
       </div>
     </div>
 
     <p class="closing">
-      El veredicto razonado que tienes en el papel del Ejercicio 3 <strong>es el output real del taller</strong>. La herramienta es útil solo si entra a tu workflow con criterio.<br/>
-      Gracias por venir, y nos vemos en <code>dev/Formaciones/</code>.
+      El veredicto razonado del Ejercicio 3 <strong>es el output real del taller</strong>.
+      La herramienta es útil solo si entra a tu workflow con criterio.
+      Gracias por venir.
     </p>
   </div>
 </div>
@@ -68,27 +99,71 @@
 <style>
   .swiper-slide { position: relative; min-height: 100vh; display: flex; align-items: flex-start; justify-content: center; overflow-y: auto; }
   .slide-background { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(59,130,246,0.12) 0%, transparent 60%), radial-gradient(ellipse at 30% 90%, rgba(167,139,250,0.10) 0%, transparent 55%), radial-gradient(ellipse at 70% 90%, rgba(34,197,94,0.06) 0%, transparent 55%); z-index: 0; }
-  .slide-content { position: relative; z-index: 1; max-width: 1200px; width: 100%; padding: var(--spacing-2xl) var(--spacing-content); display: flex; flex-direction: column; gap: var(--spacing-xl); }
+  .slide-content { position: relative; z-index: 1; max-width: 1280px; width: 100%; padding: var(--spacing-2xl) var(--spacing-content); display: flex; flex-direction: column; gap: var(--spacing-xl); }
   .slide-header { display: flex; flex-direction: column; gap: var(--spacing-md); }
-  .label { font-family: var(--font-mono); font-size: 0.85rem; color: var(--color-electric); letter-spacing: 0.12em; text-transform: uppercase; }
-  h2 { margin: 0; font-size: clamp(2rem, 5vw, 3.6rem); line-height: 1.1; }
-  .highlight { background: linear-gradient(135deg, var(--color-accent-bright), var(--color-electric), #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-  .takeaways { display: flex; flex-direction: column; gap: var(--spacing-sm); }
-  .takeaway { padding: var(--spacing-md) var(--spacing-lg); display: flex; align-items: center; gap: var(--spacing-lg); }
-  .num { font-family: var(--font-mono); font-size: 2rem; font-weight: 800; color: var(--color-accent-bright); line-height: 1; flex-shrink: 0; min-width: 40px; }
-  .takeaway p { margin: 0; line-height: 1.55; opacity: 0.9; font-size: 0.95rem; }
-  .grid { display: grid; grid-template-columns: 1.3fr 1fr; gap: var(--spacing-lg); }
-  .card-glass { padding: var(--spacing-xl); }
-  h3 { margin: 0 0 var(--spacing-md) 0; font-size: 1.1rem; color: var(--color-electric); font-family: var(--font-mono); letter-spacing: 0.05em; }
-  ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--spacing-sm); }
-  li { line-height: 1.55; opacity: 0.9; font-size: 0.92rem; }
-  .next-step p { margin: 0 0 var(--spacing-sm) 0; opacity: 0.85; }
-  .next-step code { font-family: var(--font-mono); padding: 1px 5px; background: rgba(96,165,250,0.1); border-radius: 3px; color: var(--color-electric); font-size: 0.82rem; }
-  .recursos li { padding-bottom: var(--spacing-xs); border-bottom: 1px solid rgba(96,165,250,0.1); }
-  .recursos li:last-child { border-bottom: none; }
-  .r-label { font-size: 0.85rem; opacity: 0.85; }
-  .recursos code { font-family: var(--font-mono); font-size: 0.78rem; color: var(--color-electric); }
-  .closing { padding: var(--spacing-lg); background: rgba(59,130,246,0.06); border-radius: var(--radius-md); text-align: center; line-height: 1.65; opacity: 0.9; margin: 0; font-size: 1rem; }
-  .closing code { font-family: var(--font-mono); padding: 2px 6px; background: rgba(96,165,250,0.1); border-radius: 4px; color: var(--color-electric); font-size: 0.85rem; }
-  @media (max-width: 768px) { .grid { grid-template-columns: 1fr; } h2 { font-size: clamp(1.8rem, 7vw, 2.6rem); } .takeaway { gap: var(--spacing-md); } .num { font-size: 1.5rem; min-width: 32px; } }
+  .label { font-family: var(--font-mono); font-size: 0.85rem; color: var(--color-cielo); letter-spacing: 0.12em; text-transform: uppercase; }
+  h2 { margin: 0; font-size: clamp(1.8rem, 4.5vw, 3rem); line-height: 1.1; }
+  .highlight { background: linear-gradient(135deg, var(--color-electrico), var(--color-cielo), #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+
+  .takeaways { display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; }
+  .takeaway { padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; }
+  .num { font-family: var(--font-mono); font-size: 1.3rem; font-weight: 800; color: var(--color-electrico); line-height: 1; }
+  .takeaway p { margin: 0; line-height: 1.45; opacity: 0.9; font-size: 0.82rem; }
+
+  /* V4 Resources pattern */
+  .resources-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 32px; align-items: center; }
+  .links-col { display: flex; flex-direction: column; gap: 10px; }
+  .link-card {
+    background: var(--color-fondo-elev);
+    border: 1px solid var(--color-borde);
+    border-radius: 10px;
+    padding: 14px 18px;
+    display: flex;
+    gap: 14px;
+    align-items: center;
+  }
+  .link-icon { font-size: 22px; flex-shrink: 0; }
+  .link-body { flex: 1; min-width: 0; }
+  .link-title { font-family: var(--font-display); font-weight: 700; font-size: 15px; color: var(--color-tinta); line-height: 1.2; }
+  .link-url { font-family: var(--font-mono); font-size: 11px; color: var(--color-cielo); margin-top: 2px; }
+  .link-tag { font-family: var(--font-mono); font-size: 10px; color: var(--color-tinta3); padding: 4px 10px; border-radius: 99px; border: 1px solid var(--color-borde); flex-shrink: 0; }
+
+  .qr-col { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; }
+  .qr-card {
+    width: 220px;
+    height: 220px;
+    background: #fff;
+    border-radius: 14px;
+    padding: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 12px 40px rgba(59,130,246,0.25);
+  }
+  .qr-grid {
+    width: 100%;
+    height: 100%;
+    display: grid;
+    grid-template-columns: repeat(21, 1fr);
+    grid-template-rows: repeat(21, 1fr);
+    gap: 1px;
+  }
+  .qr-cell { background: transparent; }
+  .qr-cell.on { background: var(--color-fondo); }
+  .qr-caption { text-align: center; }
+  .qr-title { font-family: var(--font-display); font-weight: 700; font-size: 16px; color: var(--color-tinta); }
+  .qr-url { font-family: var(--font-mono); font-size: 11px; color: var(--color-cielo); margin-top: 4px; }
+
+  .closing { padding: 16px 20px; background: rgba(59,130,246,0.06); border-radius: 12px; text-align: center; line-height: 1.6; opacity: 0.9; margin: 0; font-size: 0.95rem; }
+
+  @media (max-width: 1024px) {
+    .resources-grid { grid-template-columns: 1fr; }
+    .qr-col { order: -1; }
+    .takeaways { grid-template-columns: repeat(2, 1fr); }
+  }
+  @media (max-width: 768px) {
+    .takeaways { grid-template-columns: 1fr; }
+    h2 { font-size: clamp(1.5rem, 6vw, 2rem); }
+    .qr-card { width: 180px; height: 180px; }
+  }
 </style>

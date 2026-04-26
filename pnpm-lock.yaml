@@ -13,7 +13,7 @@ importers:
         version: 7.2.5(astro@5.18.1(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.60.2)(typescript@5.9.3)(yaml@2.8.3))(jiti@2.6.1)(lightningcss@1.32.0)(svelte@5.55.5)(typescript@5.9.3)(yaml@2.8.3)
       '@codigosinsiesta/theme':
         specifier: github:CodigoSinSiesta/theme
-        version: https://codeload.github.com/CodigoSinSiesta/theme/tar.gz/d2249d0039ee2d821ce0482a74aa94c30cfd02ff
+        version: https://codeload.github.com/CodigoSinSiesta/theme/tar.gz/ddbd050937ccf3e61aea5ed84fcec13d7b6a2f89(svelte@5.55.5)
       astro:
         specifier: ^5.18.1
         version: 5.18.1(jiti@2.6.1)(lightningcss@1.32.0)(rollup@4.60.2)(typescript@5.9.3)(yaml@2.8.3)
@@ -113,9 +113,14 @@ packages:
     resolution: {integrity: sha512-VERIM64vtTP1C4mxQ5thVT9fK0apjPFobqybMtA1UdUujWka24ERHbRHFGmpbbhp73MhV+KSsHQH9C6uOTdEQA==}
     engines: {node: '>=18'}
 
-  '@codigosinsiesta/theme@https://codeload.github.com/CodigoSinSiesta/theme/tar.gz/d2249d0039ee2d821ce0482a74aa94c30cfd02ff':
-    resolution: {tarball: https://codeload.github.com/CodigoSinSiesta/theme/tar.gz/d2249d0039ee2d821ce0482a74aa94c30cfd02ff}
-    version: 0.1.0
+  '@codigosinsiesta/theme@https://codeload.github.com/CodigoSinSiesta/theme/tar.gz/ddbd050937ccf3e61aea5ed84fcec13d7b6a2f89':
+    resolution: {tarball: https://codeload.github.com/CodigoSinSiesta/theme/tar.gz/ddbd050937ccf3e61aea5ed84fcec13d7b6a2f89}
+    version: 0.2.0
+    peerDependencies:
+      svelte: '>=5.0.0'
+    peerDependenciesMeta:
+      svelte:
+        optional: true
 
   '@emmetio/abbreviation@2.3.3':
     resolution: {integrity: sha512-mgv58UrU3rh4YgbE/TzgLQwJ3pFsHHhCLqY20aJq+9comytTXUDNGG/SMtSeMJdkpxgXSXunBGLD8Boka3JyVA==}
@@ -2393,7 +2398,9 @@ snapshots:
     dependencies:
       fontkitten: 1.0.3
 
-  '@codigosinsiesta/theme@https://codeload.github.com/CodigoSinSiesta/theme/tar.gz/d2249d0039ee2d821ce0482a74aa94c30cfd02ff': {}
+  '@codigosinsiesta/theme@https://codeload.github.com/CodigoSinSiesta/theme/tar.gz/ddbd050937ccf3e61aea5ed84fcec13d7b6a2f89(svelte@5.55.5)':
+    optionalDependencies:
+      svelte: 5.55.5
 
   '@emmetio/abbreviation@2.3.3':
     dependencies:

@@ -1,6 +1,10 @@
 <script lang="ts">
   import { onMount } from 'svelte';
   import { animateSlideEntrance } from '@/utils/animations';
+  // Componentes V4 desde @codigosinsiesta/theme v0.2.0
+  import Eyebrow from '@codigosinsiesta/theme/components/Eyebrow.svelte';
+  import QRCode  from '@codigosinsiesta/theme/components/QRCode.svelte';
+
   let slideElement: HTMLElement;
   onMount(() => { animateSlideEntrance(slideElement); });
 
@@ -12,7 +16,6 @@
     { num: 5, text: 'Honestidad: cada arista EXTRACTED/INFERRED/AMBIGUOUS. Cohesion en números. Diferencia con un RAG ingenuo.' }
   ];
 
-  // V4 ResourcesSlide pattern
   const links = [
     { icon: '🐙', title: 'Repo del starter',         url: 'github.com/CodigoSinSiesta/taller-graphify-starter',      tag: 'template' },
     { icon: '🎬', title: 'Slides de este taller',    url: 'codigosinsiesta.github.io/taller-graphify-presentation',  tag: 'deck' },
@@ -20,32 +23,13 @@
     { icon: '📖', title: 'Wiki: graphify',           url: 'codigosinsiesta.github.io/wiki/graphify',                 tag: 'docs' },
     { icon: '🧭', title: 'GitNexus (alternativa)',   url: 'github.com/abhigyanpatwari/GitNexus',                     tag: 'alt' }
   ];
-
-  const qr = {
-    title: 'Escanea para todo',
-    url: 'codigosinsiesta.github.io/taller-graphify'
-  };
-
-  // QR placeholder determinístico (mismo patrón visual que el V4 design original)
-  const qrCells: boolean[] = Array.from({ length: 441 }).map((_, i) => {
-    const r = Math.floor(i / 21);
-    const c = i % 21;
-    const finder = (r === 0 || r === 6 || c === 0 || c === 6) && (r < 7 && c < 7);
-    const finderR = (r === 0 || r === 6 || c === 14 || c === 20) && (r < 7 && c >= 14);
-    const finderB = (r === 14 || r === 20 || c === 0 || c === 6) && (r >= 14 && c < 7);
-    const inner =
-      (r >= 2 && r <= 4 && c >= 2 && c <= 4) ||
-      (r >= 2 && r <= 4 && c >= 16 && c <= 18) ||
-      (r >= 16 && r <= 18 && c >= 2 && c <= 4);
-    return inner || finder || finderR || finderB || ((r * 7 + c * 13) % 5 < 2);
-  });
 </script>
 
 <div class="swiper-slide" bind:this={slideElement}>
   <div class="slide-background"></div>
   <div class="slide-content">
     <div class="slide-header">
-      <span class="label">Cierre</span>
+      <Eyebrow>Cierre</Eyebrow>
       <h2>Cinco takeaways. <span class="highlight">Un siguiente paso</span> esta semana.</h2>
     </div>
 
@@ -58,7 +42,6 @@
       {/each}
     </div>
 
-    <!-- V4 Resources slide-type: links + QR -->
     <div class="resources-grid">
       <div class="links-col">
         {#each links as l}
@@ -74,17 +57,11 @@
       </div>
 
       <div class="qr-col">
-        <div class="qr-card">
-          <div class="qr-grid">
-            {#each qrCells as on}
-              <div class="qr-cell" class:on={on}></div>
-            {/each}
-          </div>
-        </div>
-        <div class="qr-caption">
-          <div class="qr-title">{qr.title}</div>
-          <div class="qr-url">{qr.url}</div>
-        </div>
+        <QRCode
+          size={220}
+          title="Escanea para todo"
+          url="codigosinsiesta.github.io/taller-graphify"
+        />
       </div>
     </div>
 
@@ -101,7 +78,6 @@
   .slide-background { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 0%, rgba(59,130,246,0.12) 0%, transparent 60%), radial-gradient(ellipse at 30% 90%, rgba(167,139,250,0.10) 0%, transparent 55%), radial-gradient(ellipse at 70% 90%, rgba(34,197,94,0.06) 0%, transparent 55%); z-index: 0; }
   .slide-content { position: relative; z-index: 1; max-width: 1280px; width: 100%; padding: var(--spacing-2xl) var(--spacing-content); display: flex; flex-direction: column; gap: var(--spacing-xl); }
   .slide-header { display: flex; flex-direction: column; gap: var(--spacing-md); }
-  .label { font-family: var(--font-mono); font-size: 0.85rem; color: var(--color-cielo); letter-spacing: 0.12em; text-transform: uppercase; }
   h2 { margin: 0; font-size: clamp(1.8rem, 4.5vw, 3rem); line-height: 1.1; }
   .highlight { background: linear-gradient(135deg, var(--color-electrico), var(--color-cielo), #a78bfa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
 
@@ -110,7 +86,6 @@
   .num { font-family: var(--font-mono); font-size: 1.3rem; font-weight: 800; color: var(--color-electrico); line-height: 1; }
   .takeaway p { margin: 0; line-height: 1.45; opacity: 0.9; font-size: 0.82rem; }
 
-  /* V4 Resources pattern */
   .resources-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 32px; align-items: center; }
   .links-col { display: flex; flex-direction: column; gap: 10px; }
   .link-card {
@@ -128,31 +103,7 @@
   .link-url { font-family: var(--font-mono); font-size: 11px; color: var(--color-cielo); margin-top: 2px; }
   .link-tag { font-family: var(--font-mono); font-size: 10px; color: var(--color-tinta3); padding: 4px 10px; border-radius: 99px; border: 1px solid var(--color-borde); flex-shrink: 0; }
 
-  .qr-col { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 18px; }
-  .qr-card {
-    width: 220px;
-    height: 220px;
-    background: #fff;
-    border-radius: 14px;
-    padding: 12px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    box-shadow: 0 12px 40px rgba(59,130,246,0.25);
-  }
-  .qr-grid {
-    width: 100%;
-    height: 100%;
-    display: grid;
-    grid-template-columns: repeat(21, 1fr);
-    grid-template-rows: repeat(21, 1fr);
-    gap: 1px;
-  }
-  .qr-cell { background: transparent; }
-  .qr-cell.on { background: var(--color-fondo); }
-  .qr-caption { text-align: center; }
-  .qr-title { font-family: var(--font-display); font-weight: 700; font-size: 16px; color: var(--color-tinta); }
-  .qr-url { font-family: var(--font-mono); font-size: 11px; color: var(--color-cielo); margin-top: 4px; }
+  .qr-col { display: flex; align-items: center; justify-content: center; }
 
   .closing { padding: 16px 20px; background: rgba(59,130,246,0.06); border-radius: 12px; text-align: center; line-height: 1.6; opacity: 0.9; margin: 0; font-size: 0.95rem; }
 
@@ -164,6 +115,5 @@
   @media (max-width: 768px) {
     .takeaways { grid-template-columns: 1fr; }
     h2 { font-size: clamp(1.5rem, 6vw, 2rem); }
-    .qr-card { width: 180px; height: 180px; }
   }
 </style>

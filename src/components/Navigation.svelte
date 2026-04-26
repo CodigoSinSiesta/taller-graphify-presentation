@@ -16,26 +16,32 @@
 
   const slideNames = [
     'hero',
+    'agenda',
     'problema',
-    'idea-karpathy',
+    'knowledge-graph',
     'anatomia',
-    'plantillas',
-    'flujo-ingesta',
+    'outputs',
+    'cuadrante',
+    'cuando-si-no',
     'hands-on-setup',
-    'hands-on-ingest',
+    'hands-on-queries',
+    'mcp',
     'mas-alla',
     'cierre'
   ] as const;
 
   const slideTitles: Record<(typeof slideNames)[number], string> = {
     hero: 'Inicio',
+    agenda: 'Agenda',
     problema: 'El problema',
-    'idea-karpathy': 'La idea (Karpathy)',
-    anatomia: 'Anatomía del wiki',
-    plantillas: 'Plantillas y vocabulario',
-    'flujo-ingesta': 'Flujo de ingesta',
+    'knowledge-graph': 'Knowledge graph',
+    anatomia: 'Anatomía de Graphify',
+    outputs: 'Outputs',
+    cuadrante: 'Cuadrante de decisión',
+    'cuando-si-no': 'Cuándo SÍ / Cuándo NO',
     'hands-on-setup': 'Hands-on 1 · Setup',
-    'hands-on-ingest': 'Hands-on 2 · Ingest',
+    'hands-on-queries': 'Hands-on 2 · Skill + queries',
+    mcp: 'MCP y agentes',
     'mas-alla': 'Más allá',
     cierre: 'Cierre'
   };

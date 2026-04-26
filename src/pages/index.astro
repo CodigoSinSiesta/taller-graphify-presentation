@@ -2,6 +2,7 @@
 import PresentationLayout from '../layouts/PresentationLayout.astro';
 import Navigation from '../components/Navigation.svelte';
 import Slide01Hero from '../components/slides/Slide01Hero.svelte';
+import SlideTOC from '../components/slides/SlideTOC.svelte';
 import Slide02Problema from '../components/slides/Slide02Problema.svelte';
 import Slide03KnowledgeGraph from '../components/slides/Slide03KnowledgeGraph.svelte';
 import Slide04Anatomia from '../components/slides/Slide04Anatomia.svelte';
@@ -18,6 +19,7 @@ import Slide12Cierre from '../components/slides/Slide12Cierre.svelte';
 <PresentationLayout title="Taller Graphify — indexa, navega, decide con criterio">
   <Navigation client:load>
     <Slide01Hero client:load />
+    <SlideTOC client:load />
     <Slide02Problema client:load />
     <Slide03KnowledgeGraph client:load />
     <Slide04Anatomia client:load />

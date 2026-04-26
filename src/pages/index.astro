@@ -1,0 +1,33 @@
+---
+import PresentationLayout from '../layouts/PresentationLayout.astro';
+import Navigation from '../components/Navigation.svelte';
+import Slide01Hero from '../components/slides/Slide01Hero.svelte';
+import Slide02Problema from '../components/slides/Slide02Problema.svelte';
+import Slide03KnowledgeGraph from '../components/slides/Slide03KnowledgeGraph.svelte';
+import Slide04Anatomia from '../components/slides/Slide04Anatomia.svelte';
+import Slide05Outputs from '../components/slides/Slide05Outputs.svelte';
+import Slide06Cuadrante from '../components/slides/Slide06Cuadrante.svelte';
+import Slide07CuandoSiNo from '../components/slides/Slide07CuandoSiNo.svelte';
+import Slide08HandsOn1 from '../components/slides/Slide08HandsOn1.svelte';
+import Slide09HandsOn2 from '../components/slides/Slide09HandsOn2.svelte';
+import Slide10MCP from '../components/slides/Slide10MCP.svelte';
+import Slide11MasAlla from '../components/slides/Slide11MasAlla.svelte';
+import Slide12Cierre from '../components/slides/Slide12Cierre.svelte';
+---
+
+<PresentationLayout title="Taller Graphify — indexa, navega, decide con criterio">
+  <Navigation client:load>
+    <Slide01Hero client:load />
+    <Slide02Problema client:load />
+    <Slide03KnowledgeGraph client:load />
+    <Slide04Anatomia client:load />
+    <Slide05Outputs client:load />
+    <Slide06Cuadrante client:load />
+    <Slide07CuandoSiNo client:load />
+    <Slide08HandsOn1 client:load />
+    <Slide09HandsOn2 client:load />
+    <Slide10MCP client:load />
+    <Slide11MasAlla client:load />
+    <Slide12Cierre client:load />
+  </Navigation>
+</PresentationLayout>

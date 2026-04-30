@@ -1,16 +1,21 @@
 import gsap from 'gsap';
 
+function prefersReducedMotion(): boolean {
+  return typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+}
+
 /**
  * Animate slide entrance
  * Called when a slide becomes active
  */
 export function animateSlideEntrance(slideElement: HTMLElement) {
   const timeline = gsap.timeline();
+  const reduceMotion = prefersReducedMotion();
 
   // Fade in the slide
   timeline.to(slideElement, {
     opacity: 1,
-    duration: 0.6,
+    duration: reduceMotion ? 0 : 0.6,
     ease: 'power2.out',
   }, 0);
 
@@ -23,8 +28,8 @@ export function animateSlideEntrance(slideElement: HTMLElement) {
       {
         opacity: 1,
         y: 0,
-        duration: 0.6,
-        stagger: 0.1,
+        duration: reduceMotion ? 0 : 0.6,
+        stagger: reduceMotion ? 0 : 0.1,
         ease: 'power2.out',
       },
       0.2
@@ -39,9 +44,10 @@ export function animateSlideEntrance(slideElement: HTMLElement) {
  * Called when a slide is about to leave
  */
 export function animateSlideExit(slideElement: HTMLElement) {
+  const reduceMotion = prefersReducedMotion();
   return gsap.to(slideElement, {
     opacity: 0.5,
-    duration: 0.4,
+    duration: reduceMotion ? 0 : 0.4,
     ease: 'power2.in',
   });
 }
@@ -50,6 +56,10 @@ export function animateSlideExit(slideElement: HTMLElement) {
  * Add hover animation to buttons
  */
 export function addButtonHoverAnimation(buttonElement: HTMLElement) {
+  if (prefersReducedMotion()) {
+    return () => undefined;
+  }
+
   const onMouseEnter = () => {
     gsap.to(buttonElement, {
       scale: 1.05,
@@ -81,6 +91,11 @@ export function addButtonHoverAnimation(buttonElement: HTMLElement) {
  * Animate counter/statistics
  */
 export function animateCounter(element: HTMLElement, targetValue: number, duration: number = 2) {
+  if (prefersReducedMotion()) {
+    element.textContent = Math.floor(targetValue).toLocaleString();
+    return;
+  }
+
   const obj = { value: 0 };
   gsap.to(obj, {
     value: targetValue,
@@ -96,6 +111,10 @@ export function animateCounter(element: HTMLElement, targetValue: number, durati
  * Add parallax effect to background
  */
 export function addParallaxEffect(element: HTMLElement, intensity: number = 0.5) {
+  if (prefersReducedMotion()) {
+    return () => undefined;
+  }
+
   const onMouseMove = (e: MouseEvent) => {
     const { clientX, clientY } = e;
     const x = (clientX - window.innerWidth / 2) * intensity;
@@ -121,6 +140,13 @@ export function addParallaxEffect(element: HTMLElement, intensity: number = 0.5)
  */
 export function observeElementsForAnimation(selector: string) {
   const elements = document.querySelectorAll(selector);
+  const reduceMotion = prefersReducedMotion();
+
+  if (reduceMotion) {
+    elements.forEach((element) => {
+      gsap.set(element, { opacity: 1, y: 0 });
+    });
+  }
 
   const observer = new IntersectionObserver((entries) => {
     entries.forEach((entry) => {
@@ -130,7 +156,7 @@ export function observeElementsForAnimation(selector: string) {
         gsap.to(element, {
           opacity: 1,
           y: 0,
-          duration: 0.6,
+          duration: reduceMotion ? 0 : 0.6,
           ease: 'power2.out',
         });
 
@@ -143,7 +169,7 @@ export function observeElementsForAnimation(selector: string) {
   });
 
   elements.forEach((element) => {
-    gsap.set(element, { opacity: 0, y: 20 });
+    gsap.set(element, reduceMotion ? { opacity: 1, y: 0 } : { opacity: 0, y: 20 });
     observer.observe(element);
   });
 
@@ -154,27 +180,85 @@ export function observeElementsForAnimation(selector: string) {
  * Create a simple tween for fade transitions
  */
 export function fadeTransition(element: HTMLElement, duration: number = 0.6) {
+  const reduceMotion = prefersReducedMotion();
   gsap.from(element, {
     opacity: 0,
-    duration,
+    duration: reduceMotion ? 0 : duration,
     ease: 'power2.out',
   });
 }
 
 /**
- * Animate a line drawing (SVG)
+ * Animate a line drawing (SVG).
+ *
+ * For <line> elements we force the visual draw to go left-to-right by checking
+ * x1 vs x2 and flipping the strokeDashoffset sign when the line is defined
+ * right-to-left. <path> and <circle> elements keep the SVG-defined direction
+ * because in this deck they're feedback loops / retry arcs where the direction
+ * is semantically meaningful.
+ *
+ * Opt-out: add `data-preserve-direction` on the <svg> (or on a single element)
+ * to keep the SVG-defined draw direction. Used for fan-out diagrams where the
+ * lines radiate outward from a center and forcing LTR would point them inward.
  */
 export function animateLineDraw(svgElement: SVGElement, duration: number = 2) {
+  const reduceMotion = prefersReducedMotion();
   const paths = svgElement.querySelectorAll('path, line, circle');
+  const svgPreserves = (svgElement as unknown as HTMLElement).dataset?.preserveDirection !== undefined;
 
   paths.forEach((path) => {
     const length = (path as any).getTotalLength?.() || 0;
-    gsap.from(path, {
-      strokeDasharray: length,
-      strokeDashoffset: length,
-      duration,
-      ease: 'power2.inOut',
-    });
+    const elPreserves = (path as unknown as HTMLElement).dataset?.preserveDirection !== undefined;
+
+    let reverse = false;
+    if (!svgPreserves && !elPreserves) {
+      if (path.tagName === 'line') {
+        const x1 = parseFloat(path.getAttribute('x1') || '0');
+        const x2 = parseFloat(path.getAttribute('x2') || '0');
+        if (x1 > x2) reverse = true;
+      } else if (path.tagName === 'path' && length > 0) {
+        const getPoint = (path as any).getPointAtLength;
+        if (typeof getPoint === 'function') {
+          try {
+            const start = getPoint.call(path, 0);
+            const end = getPoint.call(path, length);
+            if (start.x > end.x) reverse = true;
+          } catch {
+            /* ignore: getPointAtLength can throw on degenerate paths */
+          }
+        }
+      }
+    }
+
+    // Preserve any original stroke-dasharray (e.g. dashed retry arrows) so we
+    // can restore it after the draw completes.
+    const originalDasharray = path.getAttribute('stroke-dasharray');
+
+    // Use fromTo and KEEP strokeDasharray fixed at `length` throughout the
+    // animation. If we let GSAP interpolate dasharray alongside dashoffset
+    // (the implicit `from` behavior), the visible portion grows from the
+    // wrong end of the path because both values shrink together.
+    gsap.fromTo(
+      path,
+      {
+        strokeDasharray: length,
+        strokeDashoffset: reverse ? -length : length,
+      },
+      {
+        strokeDasharray: length,
+        strokeDashoffset: 0,
+        duration: reduceMotion ? 0 : duration,
+        ease: 'power2.inOut',
+        onComplete: () => {
+          if (originalDasharray !== null) {
+            path.setAttribute('stroke-dasharray', originalDasharray);
+          } else {
+            path.removeAttribute('stroke-dasharray');
+          }
+          path.removeAttribute('stroke-dashoffset');
+        },
+      }
+    );
   });
 }
 
@@ -186,6 +270,7 @@ export function staggerAnimation(
   duration: number = 0.6,
   staggerDelay: number = 0.1
 ) {
+  const reduceMotion = prefersReducedMotion();
   const timeline = gsap.timeline();
 
   elements.forEach((element, index) => {
@@ -194,10 +279,10 @@ export function staggerAnimation(
       {
         opacity: 1,
         y: 0,
-        duration,
+        duration: reduceMotion ? 0 : duration,
         ease: 'power2.out',
       },
-      index * staggerDelay
+      reduceMotion ? 0 : index * staggerDelay
     );
   });
 
@@ -208,6 +293,11 @@ export function staggerAnimation(
  * Pulse animation for attention
  */
 export function createPulse(element: HTMLElement, scale: number = 1.1) {
+  if (prefersReducedMotion()) {
+    gsap.set(element, { scale: 1, opacity: 1 });
+    return;
+  }
+
   gsap.to(element, {
     scale,
     opacity: 0.8,
